@@ -42,34 +42,34 @@
     
     <div class="my-3" id="comments"> {{article.comments.size}}
         {% if article.comments.size>0 %} 
-            {% paginate article.comments by 1%}
+            {% paginate article.comments by 2%}
                 {% for comment in article.comments %}
                     <span>{{comment.author}}</span> <span>{{comment.created_at |  date : format: 'long' }}</span>
                     {{comment.content}}
                 {% endfor %}
+                {% if paginate.pages > 1 %}
+                    {{ paginate | default_pagination }}
+                {% endif %}
             {% endpaginate %}
-            {% if paginate.pages > 1 %}
-                {{paginate | default_pagination}}
-            {% endif %}
             {% else %}
                 No comments added in this article
         {% endif %}
     </div>
 
     <div id="comment_form" class="mb-8">
-        {% form 'new_comment', article %} {{form.errors}}
-          {% if form.errors %}
-            <div class="border p-5">
-                <div class="flex items-center">
-                    <div class="text-red-500">
-                        {% render 'icon-fail' %}
-                    </div>
-                    {% for error in form.errors %}
-                        <div class="text-base">{{form.errors.messages[error]}}</div>
-                    {% endfor %}
-                </div>      
-            </div>
-             
+        {% form 'new_comment', article %} 
+
+           {% if form.errors %}
+                <div class="border p-5">
+                    <div class="flex items-center">
+                        <div class="text-red-500">
+                            {% render 'icon-fail' %}
+                        </div>
+                        {% for error in form.errors %}
+                            <div class="text-base">{{form.errors.messages[error]}}</div>
+                        {% endfor %}
+                    </div>      
+                </div>
            {% elsif form.posted_successfully? %}
                 <div class="flex items-center">
                     <div class="text-green-500">
@@ -77,8 +77,9 @@
                     </div>
                     <div class="text-green">Comment posted successfully</div>
                 </div>
-           {% endif %} 
-            <div class="flex-1 mx-auto items-center justify-center max-w-4xl px-4">
+           {% endif %}
+
+            <div class="flex-1 mx-auto items-center justify-center max-w-4xl px-4"> 
                 <div class="px-1  md:flex mb-3">
                     <div class="px-3 md:w-1/2">
                             <label for="comment_author"
@@ -121,6 +122,17 @@
         {% endform %}
     </div>
 {% endif %}
+
+<script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type":"BlogPosting",
+        "headline": {{article.title | json}},
+        "articleBody":{{article.content | strip_html | json}}
+    }
+</script>
+
+
 {% schema %}
 {
     "name": "Template Article",

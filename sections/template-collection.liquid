@@ -1,0 +1,39 @@
+<div class="px-4 py-8"> 
+    {% paginate collection.products by section.settings.perPage %}
+        <h1 class="text-3xl text-center">{{collection.title}}</h1>
+
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 ">
+                 {% for product in collection.products %}
+                    {% render 'product-card', prod:product %}
+                    {% else %}
+                        <p>There are no products in this collection</p> 
+                {% endfor %}
+            </div>
+        </div>
+       
+        {% render 'pagination', pagination:paginate %}
+    {% endpaginate %}
+</div>
+
+{% schema %}
+{
+    "name": "Template collection",
+    "tag": "section",
+    "settings": [
+        {
+            "type": "range",
+            "id": "perPage",
+            "label": "Per page count",
+            "default":3,
+            "min": 1,
+            "max": 12
+        },{
+            "type": "checkbox",
+            "id":"showVendor",
+            "label":"Show Vendor",
+            "default":false
+        }
+        ]
+}
+{% endschema %}

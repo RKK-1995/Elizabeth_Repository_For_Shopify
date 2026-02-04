@@ -1,0 +1,108 @@
+{% if cart.item_count > 0 %}
+   <div class="max-w-4xl mx-auto py-8">
+        <div class="flex items-end justify-between">
+            <h1 class="text-3xl py-3">Your Cart</h1>
+            <div class="hover:bg-gray-50 underline">
+                <a href="{{routes.all_products_collection_url}}">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+    <div class="max-w-4xl mx-auto">
+        {% comment %} table {% endcomment %}
+        <form action="{{routes.cart_url}}"  method="POST" id="cart_form" data-no-instant  novalidate>
+           <table class="table-auto devide-y devide-gray-200 my-4 w-full">
+                <thead>
+                    <tr class="border-b">
+                        <th class="px-6 py-3 text-left text-sm text-medium text-gray-500">Product</th>
+                        <th class="px-6 py-3 text-left text-sm text-medium text-gray-500">Quantity</th>
+                        <th class="px-6 py-3 text-left text-sm text-medium text-gray-500">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart.items %}
+                        <tr class="table-row">
+                            <td class="py-4 px-6 flex flex-col justify-center">
+                                <a href="{{item.url}}">
+                                    {% if item.image %}
+                                        <img src="{{item.image.src |  image_url}}" alt="{{item.image.title}}" height="80" width="100">
+                                    {% endif %}
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 flex flex-col justify-center">
+                                <a href="{{item.url}}" class="font-bold">{{item.product.title}}</a>
+                                <span> {{item.variant.title}}</span>
+                                <a href="{{routes.cart_update_url}}?line={{forloop.index}}&quantity=0" class="font-bold text-red-500 text-sm">remove</a>
+                            </td>
+                            <td  class="py-4 px-6 ">
+                                <input type="number" min="1" name="updates[]" value="{{item.quantity}}" id="updates_{{forloop.index}}" class="border p-2">
+                            </td>
+                            <td class="py-4 px-6">
+                                {{item.final_price |  money}}
+                            </td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="flex flex-col md:flex-row items-center w-full justify-between">
+                <div class="flex flex-col justify-start px-6">
+                    <label for="cart_note">Cart Note</label>
+                    <textarea name="note" id="cart_note" class="border resize-none w-100"></textarea>
+                </div>
+                <div class="my-4">
+                    {% for block in section.blocks %} 
+                        {% case block.type %} 
+                            {% when 'subtotal_title' %}
+                                <h3 class="font-bold">Subtotal: {{cart.total_price |  money}}</h3>
+                            {% when 'update_btn' %}
+                                <div class="my-2">
+                                    <button type="submit" value="update" class="border cursor-pointer hover:bg-gray-100 hover:text-gray-900 py-2 w-full">Update</button>
+                                </div>
+                            {% when 'checkout_btn' %}
+                                <div class="my-2">
+                                    <button type="submit" value="checkout" name="checkout" class="bg-gray-500 border cursor-pointer hover:bg-gray-100 hover:text-gray-900 py-2 w-full text-white">Checkout</button>
+                                </div>
+                            {% else %}
+                                
+                        {% endcase %}
+                    {% endfor %}
+                    
+                </div>
+            </div>
+        </form>
+
+    </div>
+{% else %} 
+    <div class="max-w-4xl py-8 mx-auto">
+        <div class="text-center">
+            <h1 class="text-3xl py-3">Your Cart is Empty</h1>
+            <div class="my-4 py-4">
+                <a href="{{routes.all_products_collection_url}}" class="border p-3 text-white bg-gray-500 cursor-pointer hover:bg-gray-50 hover:text-gray-900">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% schema %}
+{
+    "name": "Template Cart",
+    "tag": "section",
+    "blocks": [
+        {
+            "type": "subtotal_title",
+            "name":"SubTotal",
+            "limit": 1
+        },
+            {
+            "type": "checkout_btn",
+            "name":"Checkout Button",
+            "limit": 1
+        },
+            {
+            "type": "update_btn",
+            "name":"Update Button",
+            "limit": 1
+        }
+    ]
+}
+{% endschema %}

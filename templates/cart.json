@@ -1,0 +1,21 @@
+{
+    "name":"Template Blog",
+    "sections": {
+        "template":{
+            "type": "template-cart"
+        },
+        "blocks":{
+            "subtotal":{
+                "type":"subtotal_title"
+            },
+            "checkout":{
+                "type":"checkout_btn"
+            },
+            "update":{
+                "type":"update_btn"
+            }
+        },
+        "block_order":["checkout","update","subtotal"]
+    },
+    "order": ["template"]
+}
