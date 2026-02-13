@@ -4,8 +4,9 @@
                 <div class="overflow-hidden">
                     {% if prod.featured_image %}
                         <img src="{{prod.featured_image | image_url }}" height="" width="" class="object-cover w-full h-full transition duration-1000 ease-in-out hover:scale-105 translate" alt="{{prod.featured_image.title}}">
+                    {% else %}
+                        {{ 'product-1' | placeholder_svg_tag: 'w-full h-64 object-cover bg-gray-100 ' }}
                     {% endif %}
-                        <img src="{{}}" alt="">
                 </div>
             </a>
             <div class="flex flex-col p-4">

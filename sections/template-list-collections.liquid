@@ -1,0 +1,47 @@
+<div class="flex flex-col items-center my-4">
+    <h1 class="text-3xl">{{section.settings.heading}}</h1>
+
+<div class="max-w-6xl max-auto">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-1">
+        {% for collection in collections %}
+            {% if collection.all_products_count >0 %}
+                <div class="w-full p-4">
+                    <div class="border overflow-hidden bg-white">
+                        <a href="{{collection.url}}">
+                            {% if collection.featured_image != blank %}
+                                {% assign collection_img = collection.featured_image %}
+                            {% else %}
+                                {% assign collection_img = collection.products.first.image %}
+                            {% endif %}
+                            <img src="{{collection_img |  image_url }}" class="object-cover w-full h-80 transition duration-1000 ease-in-out transform hover:scale-105" alt="" height="" width="">
+                             <div class="p-4">
+                                <h1>{{collection.title}}</h1>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                 
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+    
+</div>
+
+
+
+{% schema %}
+{
+    "name": "Template Collection list",
+    "tag": "section",
+    "settings": [
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default":"Collection"
+    
+        }
+        ]
+}
+{% endschema %}

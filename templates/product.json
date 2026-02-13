@@ -1,8 +1,8 @@
 {
-    "name":"Template Blog",
+    "name": "Product template",
     "sections": {
         "template":{
-            "type": "template-blog"
+            "type":"template-product"
         }
     },
     "order": ["template"]

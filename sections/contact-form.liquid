@@ -1,0 +1,67 @@
+<div class="flex flex-col items-center my-8">
+    {% if section.settings.title != blank %}
+        <h1 class="text-3xl text-center mb-4"> {{section.settings.title }} </h1>
+    {% endif %}
+    {% form 'contact' %}
+        <div class="max-w-6xl mx-auto flex flex-col justify-center px-4">
+            {% if form.errors %}
+                <div class="border p-5">
+                    <div class="flex items-center">
+                        <div class="text-red-500">
+                            {% render 'icon-fail' %}
+                        </div>
+                        {% for error in form.errors %}
+                            <div class="text-base">{{error}} {{form.errors.messages[error]}}</div>
+                        {% endfor %}
+                    </div>      
+                </div>
+           {% elsif form.posted_successfully? %}
+                <div class="flex items-center mb-3">
+                    <div class="text-green-500">
+                        {% render 'icon-success' %}
+                    </div>
+                    <div class="text-green">Your message posted successfully</div>
+                </div>
+           {% endif %}
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="w-full md:w-1/2"> 
+                        <label for="contact_name" class="font-medium text-gray-500 text-sm uppercase">Contact Name</label>
+                        <input type="text" required id="contact_name" name="contact[name]" class="border p-2 text-gray-400 w-full">
+                </div>
+                <div class="w-full md:w-1/2"> 
+                        <label for="contact_email"  class="font-medium text-gray-500 text-sm uppercase">Contact Email</label>
+                        <input type="text" required id="contact_email" name="contact[email]" class="border p-2 text-gray-400 w-full">
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="w-full mb-3">
+                    <label for="contact_body"  class="font-medium text-gray-500 text-sm uppercase">Message</label>
+                    <textarea name="contact[body]" required id="contact_body" class="border p-2 text-gray-400 w-full"></textarea>
+                </div>
+            </div>
+
+            <div class="flex  justify-end mb-3">
+                <input type="submit" value="Submit message" class="bg-green-800 border cursor-pointer font-light p-1 p-2 text-white uppercase w-full">
+            </div>
+        </div>
+    {% endform %}
+</div>
+
+{% schema %}
+{
+    "name": "Contact Form",
+    "settings": [
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Title"
+        }
+    ],
+    "presets": [
+        {
+            "name": "Contact form"
+        }
+    ]
+}
+{% endschema %}
