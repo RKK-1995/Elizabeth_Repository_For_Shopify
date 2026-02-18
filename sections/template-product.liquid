@@ -51,65 +51,125 @@
             </div>
         </div>
         <div class="product--information w-full px-4">
-                {% form 'product', product %}
+                {% form 'product', product, id:'product-form',novalidate:'novalidate' %}
                 <input type="hidden" name="id" value="{{selected_variant.id}}">
-                <div class="my-3">
-                    <span class="text-xs text-gray-500">{{product.vendor}}</span>
-                </div>
-                <div class="my-3">
-                    <span class="text-2xl ">{{product.title}}</span>
-                </div>
-                <div class="flex items-center my-3">
-                    <span class="text-base text-gray-500 line-through">{{selected_variant.compare_at_price |  money}}</span>
-                    <span class="text-lg text-gray-900">{{selected_variant.price |  money}}</span>
+                    {% for item in section.blocks %}
+                        {% case item.type %}
+                            {% when 'vendor' %}
+                                <div class="my-3">
+                                    <span class="text-xs text-gray-500">{{product.vendor}}</span>
+                                </div>
+                            {% when 'title' %}
+                                <div class="my-3">
+                                    <span class="text-2xl ">{{product.title}}</span>
+                                </div>
+                            {% when 'price' %}
+                                <div class="flex items-center my-3" id="price-{{section.id}}">
+                                    <span class="text-base text-gray-500 line-through">{{selected_variant.compare_at_price |  money}}</span>
+                                    <span class="text-lg text-gray-900">{{selected_variant.price |  money}}</span>
 
-                    {% if selected_variant.compare_at_price < selected_variant.price  %}
-                        <span class="text-xs text-white bg-red px-2 ml-3 rounded">Sale</span>
-                    {% endif %}
-                </div>
-
-                <div class="my-3">
-                     {% if product.options_with_values %}
-                        {% for option in product.options_with_values %}
-                            <div class="my-3">
-                                <label for="Option-{{option.selected_value}}-{{forloop.index}}" >{{option.name}}</label>
-                                <select name="options[{{option.name}}]" id="Option-{{option.selected_value}}-{{forloop.index}}" class="border px-2 py-2 w-full">
-                                {% for item in option.values %}
-                                    <option value="{{item.selected}}"
-                                    {% if item.selected == option.selected_value.name %}
-                                        selected
+                                    {% if selected_variant.compare_at_price < selected_variant.price  %}
+                                        <span class="text-xs text-white bg-red px-2 ml-3 rounded">Sale</span>
                                     {% endif %}
-                                    class="border">{{item}}</option>  
-                                {% endfor %}
-                                </select>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-                <div class="my-3">
-                    <label for="quantity" class="font-medium text-sm ">Quantity</label>
-                    <input type="number" required id="quantity" name="quantity" class="border p-2  w-full" min="1" value="1">
-                </div>
-
-                <div class="my-3">
-                    {{product.description|truncatewords  }}
-                </div>
-
-                <div class="my-3"> 
-                    {% assign prod_available = selected_variant.available  %}
-                    <button  type="submit" name="add" class="bg-gray-900 p-2 rounded text-white text-xs uppercase {% if prod_available %}cursor-pointer{% endif %} ">
-                        {% if prod_available == false %}
-                            Soldout
+                                </div>
+                            {% when 'variant_selector' %}
+                                <div class="my-3">
+                                    {% if product.options_with_values %}
+                                        <div data-url="{{product.url}}"  data-section="{{section.id}}">
+                                            {% for option in product.options_with_values %}
+                                                <div class="my-3">
+                                                    <label for="Option-{{option.selected_value}}-{{forloop.index}}" >{{option.name}}</label>
+                                                    <select name="options[{{option.name}}]" id="Option-{{option.selected_value}}-{{forloop.index}}" class="border px-2 py-2 w-full" >
+                                                    {% for item in option.values %}  
+                                                        <option value="{{item.variant.id}}"
+                                                        {% if item.name == option.selected_value %}
+                                                            selected
+                                                        {% endif %} 
+                                                        class="border" data-variant-id={{item.variant.id}} data-price="{{item.variant.price}}">{{item}}</option>  
+                                                    {% endfor %}
+                                                    </select>
+                                                </div>
+                                            {% endfor %}
+                                        </div>                                       
+                                    {% endif %}
+                                </div>
+                            {% when 'quantity' %}
+                                <div class="my-3">
+                                    <label for="quantity" class="font-medium text-sm ">Quantity</label>
+                                    <input type="number" required id="quantity" name="quantity" class="border p-2  w-full" min="1" value="1">
+                                </div>
+                            {% when 'description' %}
+                                <div class="my-3">
+                                    {{product.description|truncatewords  }}
+                                </div>
+                            {% when 'checkout_buttons' %}
+                                <div class="my-3"> 
+                                        {% assign prod_available = selected_variant.available  %}
+                                        <button  type="submit" name="add" class="bg-gray-900 p-2 rounded text-white text-xs uppercase {% if prod_available %}cursor-pointer{% endif %} ">
+                                            {% if prod_available == false %}
+                                                Soldout
+                                                {% else %}
+                                                    Add to Cart
+                                            {% endif %}
+                                        </button>
+                                    </div>
                             {% else %}
-                                Add to Cart
-                        {% endif %}
-                    </button>
-                </div>
+                                 
+                        {% endcase %}
+                    {% endfor %}
             {% endform %}    
         </div>
     </div>
 </div>
 
+
+<script>
+// 1. Select all dropdowns
+const dropdowns = document.querySelectorAll('select');
+
+dropdowns.forEach(select => {
+    select.addEventListener('change', (event) => {
+        // 2. Get the currently selected <option> element
+        const selectedOption = event.target.selectedOptions[0];
+
+        // 3. Get the specific attribute value
+        const selected_variant_id = selectedOption.getAttribute('data-variant-id');
+        productForm.updateUrl(selected_variant_id);
+        productForm.updateFormId(selected_variant_id);
+        productForm.updatePrice(selected_variant_id)
+        
+    });
+});
+const dataset = document.querySelector('[data-url]').dataset;
+
+var productForm = {
+    updateUrl(id){
+        var newUrl = dataset.url+`?variant=${id}`;
+        window.history.replaceState({}, '', newUrl);
+    },
+    updateFormId(id){
+        var inputElm = document.querySelector('#product-form').querySelector('input[name=id]');
+        inputElm.value = id;
+    },
+    updatePrice(variant_id){
+        var id = `price-${dataset.section}`;
+    
+        fetch(`${window.location.pathname}?variant=${variant_id}&section_id=${dataset.section}`)
+        .then((response)=>response.text())
+        .then(responseText => {
+            const oldPrice = document.getElementById(id);
+            const html = new DOMParser().parseFromString(responseText,'text/html');
+            const newPrice = html.getElementById(id);
+            if(oldPrice && newPrice){
+                oldPrice.innerHTML = newPrice.innerHTML;
+            }
+      });
+    }
+
+}
+
+       
+</script>
 <script>
     var swiper = new Swiper(".swiper", {
       cssMode: true,
