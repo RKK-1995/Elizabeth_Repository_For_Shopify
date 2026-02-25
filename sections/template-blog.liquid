@@ -3,26 +3,7 @@
         <div class="max-w-6xl mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {% for article in blog.articles %}
-                    <div class=" flex flex-grow h-full w-full px-3 py-6">
-                        <div class="bg-white shadow-xl rounded-lg overflow-hidden">
-                            {% if article.image %}
-                                <img  class="w-full object-cover h-80" src="{{article.image | image_url}}" alt="{{article.image.alt}}" height="160" width="240">
-                            {% endif %}
-
-                            <div class="py-4 ml-0 md:mx-3">
-                                {% if article.title %}
-                                    <h1 class="font-bold mb-3">{{article.title}}</h1>
-                                {% endif %}
-                                {% if article.content %}
-                                    <div class="mb-3">{{article.content| strip_html| truncatewords: 20}}</div>
-                                {% endif %}
-                                
-                                <a href="{{article.url}}" class="cursor-pointer">Read More</a> 
-                            </div>
-                            
-
-                        </div>
-                    </div>
+                    {% render 'article-card', article:article %}
                 {% endfor %}
             </div>
         </div>

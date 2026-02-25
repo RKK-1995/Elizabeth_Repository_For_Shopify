@@ -26,3 +26,13 @@
 .bg-red{
   background-color: red;
 }
+
+.mt-auto{
+  margin-top: auto !important;
+}
+
+
+/* article */
+.article--card{
+    height: 140px;
+}

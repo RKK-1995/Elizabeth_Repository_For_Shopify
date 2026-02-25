@@ -34,7 +34,7 @@
                                 <a href="{{routes.cart_change_url}}?line={{forloop.index}}&quantity=0" class="font-bold text-red-500 text-sm">remove</a>
                             </td>
                             <td  class="py-4 px-6 ">
-                                <input type="number" min="1" name="updates[]" value="{{item.quantity}}" id="updates_{{forloop.index}}" class="border p-2">
+                                <input type="number" min="1" name="updates[]" value="{{item.quantity}}" id="updates_{{forloop.index}}" class="border p-2 cursor-pointer">
                             </td>
                             <td class="py-4 px-6">
                                 {{item.final_price |  money}}

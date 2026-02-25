@@ -15,7 +15,8 @@
                 "type":"update_btn"
             }
         },
-        "block_order":["checkout","update","subtotal"]
+        "block_order":["checkout", "update","subtotal"]
+       
     },
     "order": ["template"]
 }

@@ -1,0 +1,10 @@
+{
+    "name":"Search Template",
+    "sections": {
+        "template":{
+            "type":"template-search-results"
+        }
+    },
+    "order":["template"]
+
+}

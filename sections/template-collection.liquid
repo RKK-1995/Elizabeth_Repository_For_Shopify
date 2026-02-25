@@ -9,14 +9,24 @@
         <h1 class="text-3xl text-center">{{collection.title}}</h1>
 
         <div class="max-w-6xl mx-auto">
-            
+            {% comment %} <div class="grid grid-cols-1 md:grid-cols-3 ">
                  {% for product in collection.products %}
-                    <div class="grid grid-cols-1 md:grid-cols-3 ">
-                        {% render 'product-card', prod:product %}
-                    </div>
-                {% else %}
+                    {% render 'product-card', prod:product %}
+                    {% else %}
                         <p class="my-3 py-3 text-center">There are no products in this collection</p> 
+
                 {% endfor %}
+            </div> {% endcomment %}
+            {% if collection.products.size > 0 %}
+                <div class="grid grid-cols-1 md:grid-cols-3 ">
+                    {% for product in collection.products %}
+                        {% render 'product-card', prod:product %}
+                    {% endfor %}
+                </div>
+                {% else %}
+                    <p class="my-3 py-3 text-center">There are no products in this collection</p> 
+            {% endif %}
+    
         </div>
        
         {% render 'pagination', pagination:paginate %}

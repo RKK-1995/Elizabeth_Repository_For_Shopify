@@ -1,0 +1,65 @@
+{% comment %} // {% paginate search.results by 10 %}
+//   <form action="/search" method="get" role="search">
+//     <input type="search" name="q" value="{{ search.terms | escape }}">
+//     <button type="submit">search</button>
+//   </form>
+
+//   {% if search.performed %}
+//     {% for item in search.results %}
+//       {% if item.featured_image %}
+//         <a href="{{ item.url | within: collection }}" title="{{ item.title | escape }}">
+//           {{ item.featured_image.src | img_url: 'medium' | img_tag: item.featured_image.alt }}
+//         </a>
+//       {% endif %}
+//       <h5>{{ item.title | link_to: item.url }}</h5>
+//       <p>{{ item.content | strip_html | truncatewords: 50 }}</p>
+//     {% else %}
+//       no results
+//     {% endfor %}
+//   {% endif %}
+
+//   {% if paginate.pages > 1 %}{{ paginate | default_pagination }}{% endif %}
+// {% endpaginate %} {% endcomment %}
+
+<div class="max-w-6xl mx-auto">
+    <h1 class="my-8 text-3xl text-center">Search Results</h1>
+    {% if search.results.size >0 %}
+       
+        {% paginate search.results by 10 %}
+            <div class="flex items-center justify-center">
+                 <form action="{{routes.search_url}}" method="get" role="search" class="mb-8">
+                    <input type="search" name="q" class="border p-2 w-100" placeholder="Search" value="{{ search.terms | escape }}">
+                    <button type="submit" class="bg-gray-500 border p-2 text-white">Search</button>
+                </form>
+            </div>
+            <div class="my-8">
+                <p class="text-center">
+                    <span class="font-bold">{{search.results_count}}</span> results found for the term <span class="font-bold">{{search.terms | escape}}</span> !
+                </p>
+            </div>
+                {% if search.performed %}
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-1">
+                        {% for item in search.results %}  
+                            {% case item.object_type %}
+                                {% when 'product' %}
+                                    {% render 'product-card',prod:item %}
+                                {% when 'article' %}
+                                    <div class="flex flex-col">
+                                        {% render 'article-card', article :item %}
+                                    </div>
+                                {% else %}
+                                    
+                            {% endcase %}
+                        {% endfor %}
+                    </div>
+
+                {% endif %}
+            {% render 'pagination',pagination:paginate %}
+        {% endpaginate %}
+
+    {% else %}
+        <p class="my-8 py-8 text-center">
+            No search results found for the term <span class="font-bold">{{ search.terms | escape }}</span>
+        </p>  
+    {% endif %}
+</div>
